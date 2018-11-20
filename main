@@ -1,0 +1,42 @@
+from skimage.io import imread
+import numpy as np
+from PIL import Image
+from scipy import ndimage, misc
+import random
+import os
+import re
+%pylab inline
+plt.style.use('seaborn-talk')
+
+
+def plot_image(N, imgs, labels):
+    print('The image should be a '+labels[N]+'.')
+    plt.imshow(imgs[N], cmap=plt.cm.binary)
+    plt.grid(False)
+
+
+def create_dataset(path_dir,images_list,size = (100,100), mode ="RGB"):
+    labels = []
+    iteractive_list = [np.array([misc.imresize(ndimage.imread(os.path.join(path_dir+'/'+image, photo), mode = mode),size) for photo in os.listdir(path_dir+'/'+image)]) for image in images_list]
+    for i in range(0,len(iteractive_list)):
+        if i == 0:
+            im_list=iteractive_list[0]
+            for j in range(0, len(iteractive_list[i])):
+                labels.append(images_list[i])
+        else:
+            im_list=np.concatenate((im_list,iteractive_list[i]),axis = 0)
+            for j in range(0, len(iteractive_list[i])):
+                labels.append(images_list[i])
+    
+    compact = [im_list, labels]
+    return compact
+    
+    
+#type1, type2,... should be in '.../data' dir.    
+    
+labels = ['type1', 'type2','type3','type4',...]
+path = '.../data/'
+
+train_images, train_labels = create_dataset(path, images_list = labels)
+
+plot_image(15,train_images,train_labels)
